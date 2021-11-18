@@ -1,0 +1,330 @@
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>hi</title>
+	<!--<link rel="stylesheet" href="console.css">-->
+    <style>@import url('firacode/fira_code.css');
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap');
+        
+        .input {
+            display: flex;
+            width: 100%;
+            font-size: 20px;
+        }
+        
+        body {
+            margin: 0;
+            font-family: "Fira Code";
+            min-height: 100vh;
+            background: #111111;
+        }
+        .input .terminal-symbol {
+            color: blue;
+            font-weight: bold;
+            user-select: none;
+            margin-right: 3px;
+            margin-left: 5px;
+        }
+        #input {
+            width: 100%;
+            color: white;
+            display: block;
+            background-color: transparent;
+            outline: none;
+            border: none;
+            resize: none;
+            font-size: 20px;
+            font-family: "Fira Code";
+        }
+        
+        #input:focus {
+            outline: none;
+            border: none;
+        }
+        
+        #output {
+            color: white;
+        }
+        
+        #output pre {
+            font-weight: bold;
+            font-family: "Fira Code";
+            word-wrap: break-word;
+            overflow: scroll;
+            border-bottom: 1px solid lightgray;
+            padding: 10px 0;
+            margin: 0;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        
+        #output pre::-webkit-scrollbar {
+            display: none;
+        }
+        
+        #output .error {
+            padding: 20px;
+            color: red;
+            background: #550000;
+            padding-left: 10px;
+        }
+        
+        #output .error::before {
+            content: "✕";
+            color: white;
+            padding: 6.1px 7px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-family: "Comfortaa";
+            margin-right: 7px;
+            font-size: 15px;
+            background-color: #330000;
+        }
+        
+        #output .warn {
+            padding: 20px;
+            color: #cccc00;
+            background: #555500;
+            padding-left: 10px;
+        }
+        
+        #output .warn::before {
+            content: "⚠";
+            color: white;
+            padding: 6.1px 7px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-family: "Comfortaa";
+            margin-right: 7px;
+            font-size: 15px;
+            background-color: #cccc00;
+        }
+        
+        #output .code::before {
+            content: ">";
+            color: lightgray;
+            font-weight: bold;
+            user-select: none;
+            margin-right: 10px;
+            margin-left: 5px;
+        }
+        
+        #output .output::before {
+            content: "<";
+            color: lightgray;
+            font-weight: bold;
+            user-select: none;
+            margin-right: 10px;
+            margin-left: 5px;
+        }
+        #output .output.isLog::before {
+            color: transparent;
+        }
+        
+        #output .output .string {
+            color: green;
+        }
+        #output .output .number {
+            color: darkorange;
+        }
+        #output .output .boolean {
+            color: blue;
+        }
+        #output .output .null {
+            color: magenta;
+        }
+        #output .output .key {
+            color: red;
+        }
+        
+        #output .output .undefined {
+            color: #aaaaaa
+        }
+    </style>
+    <script>
+        window.$ = function $ (query) {
+            const r = document.querySelectorAll(query);
+            return r.length > 1 ? r : r.length < 1 ? null : r[0];
+        }
+        HTMLElement.prototype.on = HTMLElement.prototype.addEventListener;
+        window.addEventListener('error', e => {
+            alert(e.message + '   at ' + e.filename + ':' + e.lineno + ':' + e.colno);
+        });
+    </script>
+</head>
+<body><!--
+    <script src="codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <script src="codemirror/mode/javascript/javascript.js"></script>-->
+	<div id="output">
+    </div>
+	<div class="input"><div class="terminal-symbol">&#62;</div><textarea id="input" rows = "1"></textarea></div>
+    <script> 
+        const key = 'Hxi2wWFLNGdoX5x1ejgjL4GymN4uhy0K1oeyCFQhCYKg5';
+        //const ev = window.ev = (sfjlsjflksjsdfiosjsoijoij) => eval.apply(window, [sfjlsjflksjsdfiosjsoijoij]);
+        
+        function isElement(obj) {
+        try {
+            return obj instanceof HTMLElement;
+        }
+        catch(e){
+            return (typeof obj==="object") &&
+            (obj.nodeType===1) && (typeof obj.style === "object") &&
+            (typeof obj.ownerDocument ==="object");
+        }
+        }
+
+        function pretyPrintJson(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        window.createError = function createError(text) {
+            text = text.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+                return '&#'+i.charCodeAt(0)+';';
+            });
+            text = text.replaceAll('\n', '<br>');
+            const pre = document.createElement('pre');
+            pre.className = 'error';
+            pre.innerHTML = text;
+            return pre;
+        }
+
+        window.createWarning = function createWarning(text) {
+            text = text.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+                return '&#'+i.charCodeAt(0)+';';
+            });
+            text = text.replaceAll('\n', '<br>');
+            const pre = document.createElement('pre');
+            pre.className = 'warn';
+            pre.innerHTML = text;
+            return pre;
+        }
+
+        window.createCode = function createCode(text) {
+            text = text.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+                return '&#'+i.charCodeAt(0)+';';
+            });
+            text = text.replaceAll('\n', '<br>');
+            const pre = document.createElement('pre');
+            pre.className = 'code';
+            pre.innerHTML = text;
+            return pre;
+        }
+
+        window.createOutput = function createOutput(data, isLog) {
+            let text;
+            const type = Object.prototype.toString.call(data);
+            if (type === '[object Array]') {
+                text = '[' + data.toString() + ']';
+            } else if (type === '[object Number]') {
+                text = '<span class = "number">' + data + '</span>';
+            } else if (type === '[object String]') {
+                text = data.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+                    return '&#'+i.charCodeAt(0)+';';
+                });
+                text = '<span class = "string">"' + text + '"</span>'
+            } else if (type === '[object Undefined]') {
+                text = '<span class = "undefined">undefined</span>'
+            } else if (type === '[object Null]') {
+                text = '<span class = "null">null</span>'
+            } else if (type === '[object Boolean]') {
+                text = '<span class = "boolean">' + data.toString() + '</span>';
+            } else if (isElement(data)) {
+                text = data.outerHTML;
+                text = text.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+                    return '&#'+i.charCodeAt(0)+';';
+                });
+            } else if (typeof data === 'object') {
+                text = JSON.stringify(data, (k, v) => {
+                    if (k != '' && v === data) {
+                        return "self";
+                    }
+                    return v;
+                }, 4);
+                text = pretyPrintJson(text);
+            } else {
+                text = data.toString();
+            }
+            text = text.replaceAll('\n', '<br>');
+            const pre = document.createElement('pre');
+            pre.className = 'output';
+            if (isLog) pre.classList.add('isLog');
+            pre.innerHTML = text;
+            return pre;
+        }
+
+        $('#input').on('keydown', (e) => {
+            $('#input').rows = ($('#input').value.split('\n').length + 1).toString();
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+
+                // set textarea value to: text before caret + tab + text after caret
+                this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
+
+                // put caret at right position again
+                this.selectionStart = this.selectionEnd = start + 1;
+            }
+            if (e.key === 'Enter') {
+                if (e.shiftKey) return;
+                if ($('#input').value.length < 1) return e.preventDefault();
+                e.preventDefault();
+                $('#output').appendChild(createCode($('#input').value));
+                try {
+                    const evaled = ev($('#input').value);
+                    $('#output').appendChild(createOutput(evaled));
+                } catch (e) {
+                    let text = e.stack;
+                    $('#output').appendChild(createError(text));
+                }
+                $('#input').value = '';
+                $('#input').rows = '1';
+            }
+        });
+
+        window.console.oldLog = window.console.log;
+        window.console.log = function (data) {
+            try {
+                $('#output').appendChild(createOutput(data, true));
+                console.oldLog(...arguments);
+            } catch (e) {
+                $('#output').appendChild(createError(e.stack));
+            }
+        }
+        window.console.oldWarn = window.console.warn;
+        window.console.warn = function (data) {
+            try {
+                $('#output').appendChild(createWarning(data, true));
+                console.oldWarn(...arguments);
+            } catch (e) {
+                $('#output').appendChild(createError(e.stack));
+            }
+        }
+		window.console.oldClear = window.console.clear;
+		window.console.clear = function () {
+            try {
+                $('#output').innerHTML = '';
+                console.oldClear(...arguments);
+            } catch (e) {
+                $('#output').appendChild(createError(e.stack));
+            }
+        }
+    </script>
+</body>
