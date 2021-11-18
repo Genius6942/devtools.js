@@ -1,6 +1,6 @@
 (async function () {
 	try {
-		let html = await fetch('/console.html');
+		let html = await fetch('https://genius6942.github.io/devtools.js/console.html');
 		html = await html.text();
 		const c = window.open('', '_blank', 'location=yes,height=' + window.outerHeight + ',width=520,scrollbars=yes,status=yes,top=0,left=' + (window.outerWidth - 520).toString());
 		c.document.write(html);
