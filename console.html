@@ -1,3 +1,4 @@
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -161,6 +162,22 @@
     </div>
 	<div class="input"><div class="terminal-symbol">&#62;</div><textarea id="input" rows = "1"></textarea></div>
     <script> 
+	function censor(censor) {
+		var i = 0;
+		var loggedValues = [];
+		
+		return function(key, value) {
+			if(i !== 0 && typeof(censor) === 'object' && typeof(value) == 'object' && (censor == value || loggedValues.includes(value))) 
+			return '[Circular]'; 
+			/*
+			if(i >= 10000) // seems to be a harded maximum of 30 serialized objects?
+			return '[Unknown]';*/
+			
+			++i; // so we know we aren't using the original object anymore
+			loggedValues.push(value)
+			return value;  
+		}
+	}
         const key = 'Hxi2wWFLNGdoX5x1ejgjL4GymN4uhy0K1oeyCFQhCYKg5';
         //const ev = window.ev = (sfjlsjflksjsdfiosjsoijoij) => eval.apply(window, [sfjlsjflksjsdfiosjsoijoij]);
         
@@ -251,12 +268,7 @@
                     return '&#'+i.charCodeAt(0)+';';
                 });
             } else if (typeof data === 'object') {
-                text = JSON.stringify(data, (k, v) => {
-                    if (k != '' && v === data) {
-                        return "self";
-                    }
-                    return v;
-                }, 4);
+                text = JSON.stringify(data, censor(data), 4);
                 text = pretyPrintJson(text);
             } else {
                 text = data.toString();
