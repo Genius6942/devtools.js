@@ -56,7 +56,7 @@ window.addEventListener('keydown', async function (e) {
 	}
 });
 
-async function toggleConsole () {
+window.toggleConsole = async function toggleConsole () {
 	if (window.console.open) {
 		window.console.c.close()
 		window.console.c = null;
