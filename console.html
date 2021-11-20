@@ -311,6 +311,11 @@
                 $('#input').rows = '1';
             }
         });
+		window.addEventListener('keydown', (e) => {
+			if (e.key === 'I' && e.shiftKey && e.ctrlKey) {
+				window.opener.toggleConsole();
+			}
+		});
 
         window.console.oldLog = window.console.log;
         window.console.log = function (data) {
