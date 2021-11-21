@@ -47,10 +47,14 @@ window.addEventListener('keydown', async function (e) {
             } catch (e) {
                 console.c.$('#output').appendChild(console.c.createError(e.stack));
             }
-			window.addEventListener('blur', console.c.blur);
-			window.addEventListener('focus', console.c.focus);
-			window.addEventListener('unload', console.c.close());
+
         }
+		window.addEventListener('blur', console.c.blur);
+		window.addEventListener('focus', console.c.focus);
+		window.addEventListener('unload', console.c.close);
+		window.addEventListener('error', (e) => {
+			console.c.$('#output').appendChild(console.c.createError(e.stack));
+		});
 	} catch (e) {
 		console.error(e);
 	}
