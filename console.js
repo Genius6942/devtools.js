@@ -25,27 +25,33 @@ window.addEventListener('keydown', async function (e) {
         window.console.log = function (data) {
             try {
                 console.c.$('#output').appendChild(console.c.createOutput(data, true));
+		    console.c.scrollTo(0,document.body.scrollHeight);
                 console.oldLog(...arguments);
             } catch (e) {
                 console.c.$('#output').appendChild(console.c.createError(e.stack));
+		    console.c.scrollTo(0,document.body.scrollHeight);
             }
         }
         window.console.oldWarn = window.console.warn;
         window.console.warn = function (data) {
             try {
                 console.c.$('#output').appendChild(console.c.createWarning(data, true));
+		    console.c.scrollTo(0,document.body.scrollHeight);
                 console.oldWarn(...arguments);
             } catch (e) {
                 console.c.$('#output').appendChild(console.c.createError(e.stack));
+		    console.c.scrollTo(0,document.body.scrollHeight);
             }
         }
 		window.console.oldClear = window.console.clear;
 		window.console.clear = function () {
             try {
                 console.c.$('#output').innerHTML = '';
+		    console.c.scrollTo(0,document.body.scrollHeight);
                 console.oldClear(...arguments);
             } catch (e) {
                 console.c.$('#output').appendChild(console.c.createError(e.stack));
+		    console.c.scrollTo(0,document.body.scrollHeight);
             }
 
         }
@@ -54,6 +60,7 @@ window.addEventListener('keydown', async function (e) {
 		window.addEventListener('unload', console.c.close);
 		window.addEventListener('error', (e) => {
 			console.c.$('#output').appendChild(console.c.createError(e.stack));
+			console.c.scrollTo(0,document.body.scrollHeight);
 		});
 	} catch (e) {
 		console.error(e);
