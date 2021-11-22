@@ -300,12 +300,15 @@
                 if ($('#input').value.length < 1) return e.preventDefault();
                 e.preventDefault();
                 $('#output').appendChild(createCode($('#input').value));
+		    window.scrollTo(0,document.body.scrollHeight);
                 try {
                     const evaled = ev($('#input').value);
                     $('#output').appendChild(createOutput(evaled));
+			window.scrollTo(0,document.body.scrollHeight);
                 } catch (e) {
                     let text = e.stack;
                     $('#output').appendChild(createError(text));
+			window.scrollTo(0,document.body.scrollHeight);
                 }
                 $('#input').value = '';
                 $('#input').rows = '1';
@@ -321,18 +324,22 @@
         window.console.log = function (data) {
             try {
                 $('#output').appendChild(createOutput(data, true));
+		window.scrollTo(0,document.body.scrollHeight);
                 console.oldLog(...arguments);
             } catch (e) {
                 $('#output').appendChild(createError(e.stack));
+		    window.scrollTo(0,document.body.scrollHeight);
             }
         }
         window.console.oldWarn = window.console.warn;
         window.console.warn = function (data) {
             try {
                 $('#output').appendChild(createWarning(data, true));
+		    window.scrollTo(0,document.body.scrollHeight);
                 console.oldWarn(...arguments);
             } catch (e) {
                 $('#output').appendChild(createError(e.stack));
+		    window.scrollTo(0,document.body.scrollHeight);
             }
         }
 		window.console.oldClear = window.console.clear;
@@ -340,8 +347,10 @@
             try {
                 $('#output').innerHTML = '';
                 console.oldClear(...arguments);
+		    window.scrollTo(0,document.body.scrollHeight);
             } catch (e) {
                 $('#output').appendChild(createError(e.stack));
+		    window.scrollTo(0,document.body.scrollHeight);
             }
         }
     </script>
