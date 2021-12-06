@@ -246,7 +246,6 @@
 
         window.createOutput = function createOutput(data, isLog) {
             let text;
-		data = data[0]
             const type = Object.prototype.toString.call(data);
             if (type === '[object Array]') {
                 text = '[' + data.toString() + ']';
@@ -304,7 +303,7 @@
 		    window.scrollTo(0,document.body.scrollHeight);
                 try {
                     const evaled = ev($('#input').value);
-                    $('#output').appendChild(createOutput([evaled]));
+                    $('#output').appendChild(createOutput(evaled));
 			window.scrollTo(0,document.body.scrollHeight);
                 } catch (e) {
                     let text = e.stack;
