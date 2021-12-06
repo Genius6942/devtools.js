@@ -24,8 +24,8 @@ window.addEventListener('keydown', async function (e) {
 		window.console.oldLog = window.console.log;
         window.console.log = function (data) {
             try {
-                console.c.$('#output').appendChild(console.c.createOutput(arguments, true));
-		    console.c.scrollTo(0, console.c.document.body.scrollHeight);
+                console.c.$('#output').appendChild(console.c.createOutput(data, true));
+		    console.c.scrollTo(0,document.body.scrollHeight);
                 console.oldLog(...arguments);
             } catch (e) {
                 console.c.$('#output').appendChild(console.c.createError(e.stack));
