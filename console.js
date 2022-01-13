@@ -9,15 +9,15 @@ window.addEventListener('keydown', async function (e) {
 		if (localStorage.useBuiltInDevTools !== 'false') {
 			if (localStorage.useBuiltInDevTools === 'true' || confirm('This site is using devtools.js. Use the normal devtools instead? ("Cancel" to use devtools.js)')) return localStorage.setItem('useBuiltInDevTools', 'true');
 		} 
-		localStorage.setItem('useBuiltInDevTools', 'false');
-		if (!window.opener) {
+		localStorage.setItem('useBuiltInDevTools', 'false');/*
+		if (window.opener) {
 			if (window.console.hasOpened) {
 				return false;
 			}
 			window.open(location.href, '_blank', 'location=yes,height=' + screen.availHeight + ',width=' + (screen.width - 520).toString() + ',scrollbars=yes,status=yes,top=0,left=0');
 			window.console.hasOpened = true;
 			return false;
-		}
+		}*/
 		e.preventDefault();
 		await toggleConsole();
 		console.c.ev = (sfjlsjflksjsdfiosjsoijoij) => eval.apply(window, [sfjlsjflksjsdfiosjsoijoij]);console.log(console.c);
