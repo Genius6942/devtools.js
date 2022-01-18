@@ -110,6 +110,7 @@
 			this.hoverBox = document.createElement("div");
 			this.hoverBox.style.position = "absolute";
 			this.hoverBox.style.pointerEvents = "none";
+			this.hoverBox.style.zIndex = '99999999'
 
 			this.descBox = document.createElement('div');
 			this.hoverBox.appendChild(document.createElement('div').appendChild(this.descBox));
@@ -280,5 +281,4 @@
 	} else {
 		window.ElementPicker = ElementPicker;
 	}
-	document.body.innerHTML += '<div id = "elpicker"></div>';
 })();
